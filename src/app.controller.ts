@@ -11,6 +11,7 @@ export class AppController {
 	@Post()
 	@ApiOperation({ summary: 'Ejecuta una consulta SQL' })
 	exectSql(@Body() dto: SqlDto) {
+		console.log('dto', dto.sql);
 		return this.appService.exectSql(dto.sql);
 	}
 }
