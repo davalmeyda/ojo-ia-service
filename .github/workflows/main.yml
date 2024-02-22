@@ -1,0 +1,48 @@
+name: Despliegue automatizado
+on:
+  push:
+    branches:
+      - main
+jobs:
+  despliegue:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Cachear dependencias de pnpm
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.pnpm-store
+            **/node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
+      - name: Install pnpm
+        run: |
+          npm install -g pnpm
+
+      - name: Install Dependencias linux
+        run: |
+          sudo apt-get install -y openssh-client rsync sshpass
+
+      - name: Install Dependencias con pnpm
+        run: |
+          pnpm install
+
+      - name: Build
+        run: |
+          pnpm run build:prod
+
+      - name: Copy Deploy
+        run: |
+          cd dist  
+          sudo sshpass -p 'nodejs' rsync -r . root@161.132.42.77:/data -e "ssh -p 32134 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+          sudo sshpass -p 'nodejs' ssh -o StrictHostKeyChecking=no root@161.132.42.77 -p 32134 "cd /data && npm i -g pnpm && pnpm i && pm2 restart ecosystem.config.js"
+          
