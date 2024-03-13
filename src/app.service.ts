@@ -48,6 +48,13 @@ export class AppService {
 	async versiones() {
 		return this.deviceModel.aggregate([
 			{
+				$match: {
+					lastConnection: {
+						$gte: new Date(new Date().getTime() - 1000 * 60 * 3),
+					},
+				},
+			},
+			{
 				$group: {
 					_id: '$version',
 					cantidad: { $sum: 1 },
