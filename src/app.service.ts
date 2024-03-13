@@ -44,4 +44,22 @@ export class AppService {
 				.exec();
 		}
 	}
+
+	async versiones() {
+		return this.deviceModel.aggregate([
+			{
+				$group: {
+					_id: '$version',
+					cantidad: { $sum: 1 },
+				},
+			},
+			{
+				$project: {
+					_id: 0,
+					version: '$_id',
+					cantidad: 1,
+				},
+			},
+		]);
+	}
 }

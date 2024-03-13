@@ -51,4 +51,10 @@ export class AppController {
 	async getDevicesDesactualizados() {
 		return this.appService.devices(0);
 	}
+
+	@Get('devices/versiones')
+	@ApiOperation({ summary: 'Get devices' })
+	async getDevicesVersiones() {
+		return this.appService.versiones();
+	}
 }
