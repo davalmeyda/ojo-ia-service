@@ -22,9 +22,15 @@ export class AppController {
 		return version;
 	}
 
-	@Get('devices')
+	@Get('devices/actualizados')
 	@ApiOperation({ summary: 'Get devices' })
-	async getDevices() {
-		return this.appService.devices();
+	async getDevicesActualizados() {
+		return this.appService.devices(1);
+	}
+
+	@Get('devices/desactualizados')
+	@ApiOperation({ summary: 'Get devices' })
+	async getDevicesDesactualizados() {
+		return this.appService.devices(0);
 	}
 }

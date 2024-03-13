@@ -21,13 +21,27 @@ export class AppService {
 		return result.version_1 + '.' + result.version_2 + '.' + result.version_3;
 	}
 
-	async devices() {
-		return this.deviceModel
-			.find({
-				lastConnection: {
-					$gte: new Date(new Date().getTime() - 1000 * 60 * 3), // Últimos 2 minutos
-				},
-			})
-			.exec();
+	async devices(tipo: number) {
+		const version = await this.version_getCurrentVersion();
+
+		if (tipo === 1) {
+			return this.deviceModel
+				.find({
+					lastConnection: {
+						$gte: new Date(new Date().getTime() - 1000 * 60 * 3), // Últimos 2 minutos
+					},
+					version: version,
+				})
+				.exec();
+		} else {
+			return this.deviceModel
+				.find({
+					lastConnection: {
+						$gte: new Date(new Date().getTime() - 1000 * 60 * 3), // Últimos 2 minutos
+					},
+					version: { $ne: version },
+				})
+				.exec();
+		}
 	}
 }
