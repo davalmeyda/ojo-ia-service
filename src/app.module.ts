@@ -5,6 +5,9 @@ import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import config, { validation } from './config/config';
 import * as Joi from 'joi';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Version, VersionSchema } from './entities/version.entity';
+import { Device, DeviceSchema } from './entities/device.entity';
 
 @Module({
 	imports: [
@@ -17,6 +20,16 @@ import * as Joi from 'joi';
 			load: [config],
 			validationSchema: Joi.object(validation),
 		}),
+		MongooseModule.forFeature([
+			{
+				name: Version.name,
+				schema: VersionSchema,
+			},
+			{
+				name: Device.name,
+				schema: DeviceSchema,
+			},
+		]),
 		DatabaseModule,
 		DatabaseModule,
 	],

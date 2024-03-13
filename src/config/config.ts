@@ -9,6 +9,7 @@ export default registerAs('config', () => ({
 	user_name: process.env.USER_NAME,
 	password: process.env.PASSWORD,
 	database: process.env.DATABASE,
+	mongo_uri: process.env.MONGO_URI,
 }));
 
 export const validation = {
@@ -19,4 +20,5 @@ export const validation = {
 	USER_NAME: Joi.string().required(),
 	PASSWORD: Joi.string().optional(),
 	DATABASE: Joi.string().required(),
+	MONGO_URI: Joi.string().required(),
 };
