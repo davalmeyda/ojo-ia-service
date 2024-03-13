@@ -8,6 +8,12 @@ import { ApiOperation } from '@nestjs/swagger';
 export class AppController {
 	constructor(private readonly appService: AppService) {}
 
+	@Get()
+	@ApiOperation({ summary: 'Activo' })
+	async activo() {
+		return 'Activo';
+	}
+
 	@Post()
 	@ApiOperation({ summary: 'Ejecuta una consulta SQL' })
 	exectSql(@Body() dto: SqlDto) {
