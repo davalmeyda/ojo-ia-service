@@ -19,7 +19,7 @@ export class AppController {
 	@ApiOperation({ summary: 'Get current version' })
 	async getCurrentVersion() {
 		const version = await this.appService.version_getCurrentVersion();
-		return version.version_1 + '.' + version.version_2 + '.' + version.version_3;
+		return version;
 	}
 
 	@Get('devices')

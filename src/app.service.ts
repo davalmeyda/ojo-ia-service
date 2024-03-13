@@ -17,7 +17,8 @@ export class AppService {
 	}
 
 	async version_getCurrentVersion() {
-		return this.versionModel.findOne().exec();
+		const result = await this.versionModel.findOne().exec();
+		return result.version_1 + '.' + result.version_2 + '.' + result.version_3;
 	}
 
 	async devices() {
