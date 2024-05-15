@@ -8,6 +8,7 @@ import * as Joi from 'joi';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Version, VersionSchema } from './entities/version.entity';
 import { Device, DeviceSchema } from './entities/device.entity';
+import { IaModule } from './ia/ia.module';
 
 @Module({
 	imports: [
@@ -32,6 +33,7 @@ import { Device, DeviceSchema } from './entities/device.entity';
 		]),
 		DatabaseModule,
 		DatabaseModule,
+		IaModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],
