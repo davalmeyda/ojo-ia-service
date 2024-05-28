@@ -40,6 +40,24 @@ export class IAController {
 		}),
 	)
 	async extractInfoVoucher(@UploadedFile() file3: Express.Multer.File) {
+		const titularesPLINBanco: { [key: string]: string } = {
+			// Información actualizada al 28/05/2024
+			'RAUL QUINCHO CUYAHUACHO': 'BBVA',
+			'HUGO JONNY MENDOZA TINEO': 'INTERBANK',
+			'ALFREDO ALEJANDRO GABRIEL MONTALVO': 'INTERBANK',
+			'MARLON SOLANO GUIZADO': 'INTERBANK',
+			'ANA LUCÍA TAPULLIMA MANIHUARI': 'INTERBANK',
+			'ARTURO MENDOZA': 'BBVA',
+			'GILVER ÁNGEL MENDOZA TINEO': 'INTERBANK',
+			'MODESTO ROJAS FERNANDEZ': 'INTERBANK',
+			'GINO ALFREDO GARRO ROBLES': 'INTERBANK',
+			'EPIFANIO SOLANO HUAMAN': 'BBVA',
+			'JIMY WILLIAM ORTIZ ZAMBRANO': 'INTERBANK',
+			'TEOFANES HINOSTROZA ESCALANTE': 'INTERBANK',
+			'LUDEMILA SANDY LEONARDO ALBORNOZ': 'INTERBANK',
+			'JHOSMELL HEITER ROMUCHO GONZALES': 'INTERBANK',
+		};
+
 		const openai = new OpenAI({
 			apiKey: process.env.OPENAI_API_KEY,
 		});
@@ -72,6 +90,8 @@ export class IAController {
 		});
 
 		let runStatus = run.status;
+
+		const startTime = Date.now(); // Inicio del temporizador
 		while (runStatus === 'queued' || runStatus === 'in_progress') {
 			console.log('Waiting for run to complete...');
 			await new Promise(resolve => setTimeout(resolve, 1000)); // Espera 5 segundos
@@ -80,8 +100,20 @@ export class IAController {
 			if (runStatus === 'completed') {
 				console.log('Run completed!');
 				const data = await openai.beta.threads.messages.list(thread.id);
-				console.log('Data:', data.data[0].content[0]['text']['value']);
-				return JSON.parse(data.data[0].content[0]['text']['value']);
+				const rawJson = data.data[0].content[0]['text']['value'];
+
+				const jsonValid = rawJson.match(/{.*}/s);
+				const voucherJSONIA = JSON.parse(jsonValid[0]);
+
+				if (voucherJSONIA['origen'] == 'PLIN') {
+					voucherJSONIA['banco'] = titularesPLINBanco[voucherJSONIA['titular']] ?? 'INDETERMINADO';
+				}
+
+				const endTime = Date.now();
+				voucherJSONIA['tiempo_respuesta'] = (endTime - startTime) / 1000;
+				console.log(voucherJSONIA);
+
+				return voucherJSONIA;
 			} else if (runStatus === 'failed') {
 				console.log('Run failed:', updatedRun.last_error);
 				throw new Error('Run failed');
