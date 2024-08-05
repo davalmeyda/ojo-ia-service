@@ -40,6 +40,8 @@ export class IAController {
 		}),
 	)
 	async extractInfoVoucher(@UploadedFile() file3: Express.Multer.File) {
+		throw new Error('Error para pruebas funcionales');
+
 		const titularesPLINBanco: { [key: string]: string } = {
 			// Información actualizada al 28/05/2024
 			'RAUL QUINCHO CUYAHUACHO': 'BBVA',
