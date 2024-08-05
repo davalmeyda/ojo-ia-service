@@ -111,8 +111,13 @@ export class IAController {
 					voucherJSONIA['banco'] = titularesPLINBanco[voucherJSONIA['titular']] ?? 'INDETERMINADO';
 				}
 
+				if (voucherJSONIA['importe']) {
+					voucherJSONIA['importe'] = voucherJSONIA['importe'].toFixed(2);
+				}
+
 				const endTime = Date.now();
 				voucherJSONIA['tiempo_respuesta'] = (endTime - startTime) / 1000;
+
 				console.log(voucherJSONIA);
 
 				return voucherJSONIA;
